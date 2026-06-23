@@ -66,7 +66,7 @@ const elemUl = document.querySelector('#lista-alunos');
     for (let aluno of alunos) {
         const elemLi = document.createElement('li');
 
-        elemLi.innerHTML = `Nome: ${aluno.nome} - Idade: ${aluno.idade}`;
+        elemLi.innerHTML = `Nome: ${aluno.nome} - Idade: ${aluno.idade} -Tel: ${aluno.telefone}`;
         const btRemover = document.createElement('input');
         btRemover.type = 'button';
         btRemover.classList.add('botoes-remover');
@@ -98,6 +98,11 @@ const editarAluno = async (evento) => {
     inputIdade.placeholder = 'Idade';
     inputIdade.id = 'input-editar-idade';
 
+    const inputTelefone = document.createElement('input');
+    inputTelefone.type = 'tel';
+    inputTelefone.placeholder = 'Telefone';
+    inputTelefone.id = 'input-editar-telefone';
+
     const btAtualizar = document.createElement('button');
     btAtualizar.innerText = '✔️';
     btAtualizar.dataset.id = evento.target.dataset.id;
@@ -105,12 +110,14 @@ const editarAluno = async (evento) => {
 
     evento.target.parentNode.appendChild(inputNome);
     evento.target.parentNode.appendChild(inputIdade);
+    evento.target.parentNode.appendChild(inputTelefone);
     evento.target.parentNode.appendChild(btAtualizar);
 }
 
 const atualizarAluno = async (evento) => {
     const nome = document.querySelector('#input-editar-nome').value;
     const idade = document.querySelector('#input-editar-idade').value;
+    const telefone = document.querySelector('#input-editar-telefone').value;
     const feedback = document.querySelector('#feedback');
 
     try {
@@ -119,7 +126,7 @@ const atualizarAluno = async (evento) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({user: { nome, idade}})
+            body: JSON.stringify({user: { nome, idade, telefone}})
         }
         let resposta = await fetch(`http://localhost:3000/users/${evento.target.dataset.id}`, options);
         resposta = await resposta.json();

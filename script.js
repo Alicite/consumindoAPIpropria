@@ -1,5 +1,5 @@
 const buscarAlunos = async (id=undefined) => {
-    const url = id ? `http://localhost:3000/users/${id}` : 'http://localhost:3000/users';
+    const url = id ? `http://localhost:3000/users/${id}` : 'http://localhost:3000/users';  
     try {
         let resposta = await fetch(url);
         resposta = await resposta.json();
@@ -28,6 +28,12 @@ const enviarAluno = async () => {
 
     if (!nome || !nascimento) {
         feedback.textContent = "⚠️ ALERTA: Nome e Data de Nascimento são obrigatórios para o registro!";
+        style.color = "var(--detalhe-alerta)";
+    } else if (!validarEmail(email)) {
+        feedback.textContent = "⚠️ ALERTA: Email inválido! Exemplo correto.: seuemail@email.com";
+        style.color = "var(--detalhe-alerta)";
+    } else if (telefone.length !== 15 || telefone.length !== 14) {
+        feedback.textContent = "⚠️ ALERTA: Telefone inválido! Quantidade de números menor que o necessário!";
         style.color = "var(--detalhe-alerta)";
     } else {
         try {
@@ -59,6 +65,9 @@ const enviarAluno = async () => {
 const removerAluno = async (evento) => {
     const id = evento.target.dataset.id;
     const feedback = document.querySelector('#feedback');
+
+    const certeza = confirm("Tem certeza que deseja remover este aluno?");
+    if (!certeza) return;
 
     try {
         let resposta = await fetch(`http://localhost:3000/users/${id}`, {
@@ -117,6 +126,7 @@ const renderAlunos = async () => {
 
 const editarAluno = async (evento) => {
     const aluno = await buscarAlunos(evento.target.dataset.id);
+
     const inputNome = document.createElement('input');
     inputNome.type = 'text';
     inputNome.placeholder = 'Nome';

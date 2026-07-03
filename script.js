@@ -156,6 +156,8 @@ const editarAluno = async (evento) => {
     evento.target.parentNode.appendChild(inputEmail);
     evento.target.parentNode.appendChild(btCancelar);
     evento.target.parentNode.appendChild(btAtualizar);
+
+    evento.target.parentNode.removeChild(evento.target);
 }
 
 const cancelarEdicao = async () => {

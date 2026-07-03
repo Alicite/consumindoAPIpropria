@@ -99,7 +99,7 @@ const renderAlunos = async () => {
         btRemover.type = 'button';
         btRemover.classList.add('botoes-remover');
         btRemover.dataset.id = aluno._id;
-        btRemover.value = '❌';
+        btRemover.value = '🗑️';
         btRemover.onclick = removerAluno;
 
         const btEditar = document.createElement('input');
@@ -145,11 +145,24 @@ const editarAluno = async (evento) => {
     btAtualizar.dataset.id = evento.target.dataset.id;
     btAtualizar.onclick = atualizarAluno;
 
+    const btCancelar = document.createElement('button');
+    btCancelar.innerText = '❌';
+    btCancelar.dataset.id = evento.target.dataset.id;
+    btCancelar.onclick = cancelarEdicao;
+
     evento.target.parentNode.appendChild(inputNome);
     evento.target.parentNode.appendChild(inputNascimento);
     evento.target.parentNode.appendChild(inputTelefone);
     evento.target.parentNode.appendChild(inputEmail);
+    evento.target.parentNode.appendChild(btCancelar);
     evento.target.parentNode.appendChild(btAtualizar);
+
+    evento.target.parentNode.removeChild(evento.target);
+}
+
+const cancelarEdicao = async () => {
+    limparAlunos();
+    await renderAlunos();
 }
 
 const atualizarAluno = async (evento) => {

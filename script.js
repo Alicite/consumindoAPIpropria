@@ -1,6 +1,7 @@
-const buscarAlunos = async () => {
+const buscarAlunos = async (id=undefined) => {
+    const url = id ? `http://localhost:3000/users/${id}` : 'http://localhost:3000/users';
     try {
-        let resposta = await fetch('http://localhost:3000/users');
+        let resposta = await fetch(url);
         resposta = await resposta.json();
 
         if (typeof(resposta) !== 'object') {
@@ -27,12 +28,6 @@ const enviarAluno = async () => {
 
     if (!nome || !nascimento) {
         feedback.textContent = "⚠️ ALERTA: Nome e Data de Nascimento são obrigatórios para o registro!";
-        style.color = "var(--detalhe-alerta)";
-    } else if (!validarEmail(email)) {
-        feedback.textContent = "⚠️ ALERTA: Email inválido! Exemplo correto.: seuemail@email.com";
-        style.color = "var(--detalhe-alerta)";
-    } else if (telefone.length !== 15 || telefone.length !== 14) {
-        feedback.textContent = "⚠️ ALERTA: Telefone inválido! Quantidade de números menor que o necessário!";
         style.color = "var(--detalhe-alerta)";
     } else {
         try {
@@ -104,7 +99,7 @@ const renderAlunos = async () => {
         btRemover.type = 'button';
         btRemover.classList.add('botoes-remover');
         btRemover.dataset.id = aluno._id;
-        btRemover.value = '❌';
+        btRemover.value = '🗑️';
         btRemover.onclick = removerAluno;
 
         const btEditar = document.createElement('input');
@@ -121,35 +116,51 @@ const renderAlunos = async () => {
 };
 
 const editarAluno = async (evento) => {
+    const aluno = await buscarAlunos(evento.target.dataset.id);
     const inputNome = document.createElement('input');
     inputNome.type = 'text';
     inputNome.placeholder = 'Nome';
     inputNome.id = 'input-editar-nome';
+    inputNome.value = aluno.nome;
 
     const inputNascimento = document.createElement('input');
     inputNascimento.type = 'date';
     inputNascimento.id = 'input-editar-nascimento';
+    inputNascimento.value = aluno.nascimento;
 
     const inputTelefone = document.createElement('input');
     inputTelefone.type = 'tel';
     inputTelefone.placeholder = 'Telefone';
     inputTelefone.id = 'input-editar-telefone';
+    inputTelefone.value = aluno.telefone;
 
     const inputEmail = document.createElement('input');
     inputEmail.type = 'text';
     inputEmail.placeholder = 'Email';
     inputEmail.id = 'input-editar-email';
+    inputEmail.value = aluno.email;
 
     const btAtualizar = document.createElement('button');
     btAtualizar.innerText = '✔️';
     btAtualizar.dataset.id = evento.target.dataset.id;
     btAtualizar.onclick = atualizarAluno;
 
+    const btCancelar = document.createElement('button');
+    btCancelar.innerText = '❌';
+    btCancelar.dataset.id = evento.target.dataset.id;
+    btCancelar.onclick = cancelarEdicao;
+
     evento.target.parentNode.appendChild(inputNome);
     evento.target.parentNode.appendChild(inputNascimento);
     evento.target.parentNode.appendChild(inputTelefone);
     evento.target.parentNode.appendChild(inputEmail);
+    evento.target.parentNode.appendChild(btCancelar);
     evento.target.parentNode.appendChild(btAtualizar);
+}
+
+const cancelarEdicao = async () => {
+    limparAlunos();
+    await renderAlunos();
 }
 
 const atualizarAluno = async (evento) => {
